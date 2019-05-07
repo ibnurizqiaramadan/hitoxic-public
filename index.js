@@ -1,17 +1,13 @@
 const Discord = require('discord.js');
-const TOKEN = 'NTI1NDU5NDQ2NDQ5ODMxOTM3.D35N0g.KbGJcI5b5D5DWiHf0t7PDbMXA3U';
+const TOKEN = 'token';
 const OWNERID = "257147179297144833";
 var bot = new Discord.Client();
 var RESULTDATA = new Array();
 var mysql = require('mysql');
-var request = require("request");
-// var HOST_ = "ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
-// var USER_ = "iz56ijjl0301h3cp";
-// var PASS_ = "zfzccpix9gdwruaa";
 var HOST_ = "127.0.0.1";
 var USER_ = "root";
 var PASS_ = "";
-var prefix = "`", command, botLogId = "", words_ = "", ignoreWords = "", hasilbad = "", channel = true, badcount = 0;
+var prefix = "`", command, botLogId = "", words_ = "", ignoreWords = "";
 var botMessage = 5000;
 var userMessage = 3000;
 var warnMessage = 30000;
@@ -598,7 +594,7 @@ bot.on("message", function(message){
                             }
                             SimpanPesan(message.content.substring((prefix.length + command[0].length), message.content.length), "add ignore channel");
                         }
-                        if (command[2] == "word2"){
+                        if (command[2] == "word"){
                             if (command[3] != null){
                                 var kata2 = command[3].split(',');
                                 kata2.forEach(kata1 =>{ 
@@ -924,22 +920,6 @@ bot.on("message", function(message){
                             msg.delete(botMessage);
                         });
                     }
-
-                    if (command[1] == "lol") {
-                        let member_ = message.guild.members.fetch(command[2]);
-                        message.channel.send(member_);
-                        // message.channel.send({embed: {
-                        //     color: colorEmbed,
-                        //     author: {
-                        //         name: member_.tag
-                        //     },
-                        //     title: "Avatar Url",
-                        //     url: member_.avatarURL,
-                        //     image: {
-                        //         url: member_.avatarURL
-                        //     }
-                        // }})
-                    }
     
                     if (command[1] == "koin"){
                         message.delete(userMessage);
@@ -1030,18 +1010,6 @@ bot.on("message", function(message){
                 }
             }
     
-            if (command[0] == "reload"){
-                if (MemberAkses.has("ADMINISTRATOR")){
-                    if (command[1] == "words"){
-                        ambilKata();
-                        message.delete(3000);
-                        message.channel.send("Kata-kata kasar berhasil dimuat ulang").then(msg =>{
-                            msg.delete(5000);
-                        });
-                    }
-                }
-            }
-    
         } else {
             if (message.guild) {
                 let sql = "SELECT * FROM t_channel WHERE guild = " + db.escape(message.guild.id) + " AND channel = " + db.escape(message.channel.id) + "AND cat = 'disable'";
@@ -1073,8 +1041,6 @@ bot.on("message", function(message){
                                         if (err) throw err;
                                         if (result.length > 0){
                                             SimpanPesan(message.content, "Monitoring");
-                                        } else {
-                                            SimpanPesan(message.content, "HAHAHA");
                                         }
                                     })
                                 } catch (error) {
@@ -1082,7 +1048,7 @@ bot.on("message", function(message){
                                 }
                                 cekKataV2();
                             } else {
-                                SimpanPesan(message.content, "Mute");
+                                SimpanPesan(message.content, "muted");
                                 message.delete(100);
                                 message.author.send("Anda sedang dimute diserver : " + message.guild.name);
                             }
