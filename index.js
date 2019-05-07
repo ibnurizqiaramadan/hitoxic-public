@@ -988,9 +988,6 @@ bot.on("message", function(message){
                             });
                         }
                     }
-                    if (command[1] == "botauthor"){
-                        message.channel.send();
-                    }
                     if (command[1] == "words"){
                         ambilKata();
                         message.channel.send(words_);
