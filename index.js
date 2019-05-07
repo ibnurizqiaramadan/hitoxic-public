@@ -613,6 +613,44 @@ bot.on("message", function(message){
                             SimpanPesan(message.content.substring((prefix.length + command[0].length), message.content.length), "add ignore word");
                         }
                     }
+
+                    function addrespond(key, respond){
+                        let sql = "SELECT * FROM t_botrespon WHERE command = " + db.escape(key) + " AND guild = " + db.escape(message.guild.id);
+                        db.query(sql, function (err, result) {
+                            if (err) throw err;
+                            if (!result.length > 0) {
+                                let sql = "INSERT INTO t_botrespon (command, respond, guild) VALUES (" + db.escape(key) + "," + db.escape(respond) + "," + db.escape(message.guild.id) + ")";
+                                db.query(sql, function (err, result) {
+                                    if (err) throw err;
+                                    if (result.affectedRows > 0) {
+                                        message.channel.send("Berhasil menambahkan Respond '" + key + "'").then(msg => {
+                                            msg.delete(botMessage);
+                                        });
+                                    }
+                                })
+                            } else {
+                                message.channel.send("Respond '" + key + "' Sudah ada !").then(msg => {
+                                    msg.delete(botMessage);
+                                });
+                            }
+                        })
+                    }
+
+                    if (command[1] == "respond"){
+                        message.delete(userMessage);
+                        if (command[2] != null){
+                            if (pesanea.indexOf('}') > 0){
+                                if (pesanea.substr(pesanea.indexOf('}') + 1, pesanea.length).indexOf('}') > 0){
+                                    let key = pesanea.substring(pesanea.indexOf('{') + 1, pesanea.indexOf('}'));
+                                    let res = pesanea.substring(pesanea.indexOf('}') + 3, pesanea.length);
+                                    let respond = res.substr(0, res.indexOf('}'));
+                                    addrespond(key, respond);
+                                    console.log("Key => " + key + "\nRespond => " + respond);
+                                    SimpanPesan(message.content.substring((prefix.length + command[0].length), message.content.length), "add respond")
+                                }
+                            }
+                        }
+                    }
     
                     if (command[1] == "monitor"){
                         if (message.member.user.id == "257147179297144833"){
@@ -704,6 +742,41 @@ bot.on("message", function(message){
                                     }
                                     message.delete(userMessage);
                                 })
+                            }
+                        }
+                    }
+
+                    function delrespond(key){
+                        let sql = "SELECT * FROM t_botrespon WHERE command = " + db.escape(key) + " AND guild = " + db.escape(message.guild.id);
+                        db.query(sql, function (err, result) {
+                            if (err) throw err;
+                            if (result.length > 0) {
+                                let sql = "DELETE FROM t_botrespon WHERE command = " + db.escape(key) + " AND guild = " + db.escape(message.guild.id);
+                                db.query(sql, function (err, result) {
+                                    if (err) throw err;
+                                    if (result.affectedRows > 0) {
+                                        message.channel.send("Berhasil menghapus Respond '" + key + "'").then(msg => {
+                                            msg.delete(botMessage);
+                                        });
+                                    }
+                                })
+                            } else {
+                                message.channel.send("Respond '" + key + "' Tidak ada !").then(msg => {
+                                    msg.delete(botMessage);
+                                });
+                            }
+                        })
+                    }
+
+
+                    if (command[1] == "respond"){
+                        message.delete(userMessage);
+                        if (command[2] != null){
+                            if (pesanea.indexOf('}') > 0){
+                                let key = pesanea.substring(pesanea.indexOf('{') + 1, pesanea.indexOf('}'));
+                                delrespond(key);
+                                console.log("Key => " + key);
+                                SimpanPesan(message.content.substring((prefix.length + command[0].length), message.content.length), "del respond")
                             }
                         }
                     }
@@ -988,6 +1061,9 @@ bot.on("message", function(message){
                             });
                         }
                     }
+                    if (command[1] == "botauthor"){
+                        message.channel.send();
+                    }
                     if (command[1] == "words"){
                         ambilKata();
                         message.channel.send(words_);
@@ -1021,7 +1097,7 @@ bot.on("message", function(message){
                             if (!result.length > 0){
                                 command = message.content.toLowerCase().split(" ");
                                 if (command.length > 0){
-                                    let sql = "SELECT respond FROM t_botrespon WHERE command = " + db.escape(message.content.toLocaleLowerCase());
+                                    let sql = "SELECT respond FROM t_botrespon WHERE command = " + db.escape(message.content.toLocaleLowerCase()) + " AND guild = " + db.escape(message.guild.id);
                                     db.query(sql, function(err, result){
                                         if (err) throw err;
                                         if (result.length > 0){
